@@ -12,7 +12,7 @@ FPS = 30
 
 def distance(x1, y1, x2, y2):
     # функция возвращает расстояние между двумя точками
-    return 0
+    return sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
 class Character:
     def __init__(self, img, speed, x, y):
@@ -52,10 +52,21 @@ class Monster(Character):
             self.move_down()
         else:
             self.move_left()
+class Player(Character):
+    def run(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w]:
+            self.move_up()
+        if keys[pygame.K_s]:
+            self.move_down()
+        if keys[pygame.K_a]:
+            self.move_left()
+        if keys[pygame.K_d]:
+            self.move_right()
 
 bg = pygame.image.load('img/bg.jpg')
 bg_the_end = pygame.image.load('img/end.jpg')
-#Ron = Character('ron.png', 2, 300, 200)
+Ron = Player('img/ron.png', 10, 300, 200)
 Spiders = []
 for _ in range(15):
     Spiders.append(Monster('img/spider.png', randint(1, 7), randint(0, 600), randint(0,400)))
@@ -73,11 +84,18 @@ while running:
     keys = pygame.key.get_pressed()  # список кнопок, которые сейчас нажаты
 
     screen.blit(bg, (0, 0))  # устанавливаем фон
-    #Ron.show()
     for Spider in Spiders:
         Spider.show()
         Spider.move()
-
+    Ron.show()
+    for Spider in Spiders:
+        if distance(Spider.x, Spider.y, Ron.x, Ron.y) < 50:
+            screen.blit(bg_the_end, (0, 0))
+            f1 = pygame.font.SysFont(None, 40)
+            text1 = f1.render('Вы продержались {} секунд'.format(game_time_sec), False, (255, 0, 0))
+            screen.blit(text1, (100, 50))
+            running = False
+    Ron.run()
     iteration = (iteration + 1) % 120
     # почему 120? берем отсчет итераций больше FPS, чтобы монстры не так часто меняли направление
     # это нужно, чтобы не переполнялась переменная итерации. Можно взять не 120, а 1234
