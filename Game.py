@@ -6,7 +6,7 @@ from time import time
 
 # начинаем работу с PyGame
 pygame.init()
-screen = pygame.display.set_mode((600, 400))
+screen = pygame.display.set_mode((1000, 600))
 pygame.display.set_caption("Game")
 clock = pygame.time.Clock()
 FPS = 30
@@ -30,7 +30,7 @@ class Character:
             self.y -= self.speed
 
     def move_down(self):
-        if self.y < 360:
+        if self.y < 560:
             self.y += self.speed
 
     def move_left(self):
@@ -38,7 +38,7 @@ class Character:
             self.x -= self.speed
 
     def move_right(self):
-        if self.x < 550:
+        if self.x < 950:
             self.x += self.speed
 class Monster(Character):
     def move(self):
@@ -74,17 +74,19 @@ class Player(Character):
         self.y = 200
 
 
+
 bg = pygame.image.load('img/bg.jpg')
 bg_the_end = pygame.image.load('img/end.jpg')
 Ron = Player('img/ron.png', 10, 300, 200)
 Spiders = []
-for _ in range(5):
+for _ in range(2):
     Spiders.append(Monster('img/spider.png', randint(1, 7), randint(0, 600), randint(0,400)))
 
 iteration = 0
 game_time_sec = 0
 running = True
-flagPotion = False
+flagPotionShow = False
+flagPotionTake = False
 while running:
     clock.tick(FPS)
     for event in pygame.event.get():
@@ -94,16 +96,22 @@ while running:
     keys = pygame.key.get_pressed()  # список кнопок, которые сейчас нажаты
 
     screen.blit(bg, (0, 0))  # устанавливаем фон
+    screen.blit(pygame.image.load('img/extra.png'), (800, 150))
     for Spider in Spiders:
         Spider.show()
         Spider.move()
     Ron.show()
     Ron.show_life()
-    if not flagPotion:
-        potion = screen.blit(pygame.image.load('img/potion1.png'), (40, 40))
-    if Ron.life < 3 and distance(Ron.x, Ron.y, 40, 40) < 50:
+    if game_time_sec % 20 == 5:
+        flagPotionShow = True
+    if flagPotionShow:
+        potion = screen.blit(pygame.image.load('img/potion1.png'), (820, 170))
+    if flagPotionShow and Ron.life < 3 and distance(Ron.x, Ron.y, 820, 170) < 50:
         Ron.life += 1
-        flagPotion = True
+        potion.x = 20000
+        potion.y = 20000
+        flagPotionShow = False
+
     for Spider in Spiders:
         if distance(Spider.x, Spider.y, Ron.x, Ron.y) < 50:
             Ron.life -= 1
@@ -120,6 +128,7 @@ while running:
     # это нужно, чтобы не переполнялась переменная итерации. Можно взять не 120, а 1234
     if iteration % FPS == 0:
         game_time_sec += 1  # вычисляем, сколько секунд длилась игра
+
     pygame.display.flip()
 
 print("Вы продержались:", game_time_sec, "сек")
