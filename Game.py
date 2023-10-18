@@ -73,7 +73,29 @@ class Player(Character):
         self.x = 300
         self.y = 200
 
+class Explosion(pygame.sprite.Sprite):
+    def __init__(self, center, size):
+        pygame.sprite.Sprite.__init__(self)
+        self.size = size
+        self.image = explosion_anim[self.size][0]
+        self.rect = self.image.get_rect()
+        self.rect.center = center
+        self.frame = 0
+        self.last_update = pygame.time.get_ticks()
+        self.frame_rate = 50
 
+    def update(self):
+        now = pygame.time.get_ticks()
+        if now - self.last_update > self.frame_rate:
+            self.last_update = now
+            self.frame += 1
+            if self.frame == len(explosion_anim[self.size]):
+                self.kill()
+            else:
+                center = self.rect.center
+                self.image = explosion_anim[self.size][self.frame]
+                self.rect = self.image.get_rect()
+                self.rect.center = center
 
 bg = pygame.image.load('img/bg.jpg')
 bg_the_end = pygame.image.load('img/end.jpg')
@@ -114,6 +136,11 @@ while running:
 
     for Spider in Spiders:
         if distance(Spider.x, Spider.y, Ron.x, Ron.y) < 50:
+            screen.blit(pygame.image.load('img/regularExplosion03.png'), (Ron.x, Ron.y))
+            screen.blit(pygame.image.load('img/regularExplosion04.png'), (Ron.x, Ron.y))
+            screen.blit(pygame.image.load('img/regularExplosion05.png'), (Ron.x, Ron.y))
+            screen.blit(pygame.image.load('img/regularExplosion06.png'), (Ron.x, Ron.y))
+            screen.blit(pygame.image.load('img/regularExplosion07.png'), (Ron.x, Ron.y))
             Ron.life -= 1
             Ron.to_center()
             if Ron.life == 0:
