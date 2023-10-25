@@ -136,6 +136,8 @@ while running:
 
     for Spider in Spiders:
         if distance(Spider.x, Spider.y, Ron.x, Ron.y) < 50:
+            screen.blit(pygame.image.load('img/regularExplosion01.png'), (Ron.x, Ron.y))
+            screen.blit(pygame.image.load('img/regularExplosion02.png'), (Ron.x, Ron.y))
             screen.blit(pygame.image.load('img/regularExplosion03.png'), (Ron.x, Ron.y))
             screen.blit(pygame.image.load('img/regularExplosion04.png'), (Ron.x, Ron.y))
             screen.blit(pygame.image.load('img/regularExplosion05.png'), (Ron.x, Ron.y))
